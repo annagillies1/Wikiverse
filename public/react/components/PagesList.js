@@ -1,12 +1,23 @@
-import React from 'react'
-import { Page } from './Page'
+// PagesList.js
+import React from 'react';
 
-export const PagesList = ({ pages }) => {
-  return <>
-		{
-			pages.map((page, idx) => {
-				return <Page page={page} key={idx} />
-			})
-		}
-	</>
-}
+const PagesList = ({ pages, onSelectPage }) => {
+  return (
+    <div>
+      <h2>Articles</h2>
+      {pages.length > 0 ? (
+        <ul>
+          {pages.map((page) => (
+            <li key={page.id} onClick={() => onSelectPage(page)}>
+              {page.title}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No articles available.</p>
+      )}
+    </div>
+  );
+};
+
+export default PagesList;

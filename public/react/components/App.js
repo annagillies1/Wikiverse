@@ -1,31 +1,39 @@
-import React, { useEffect, useState } from 'react'
-import { PagesList } from './PagesList'
+import React, { useEffect, useState } from 'react';
+import  PagesList  from './PagesList';
+import Page from './Page.js';
+import api from '../api.js';
 
-// import and prepend the api url to any fetch calls
-import apiURL from '../api'
+
 
 export const App = () => {
   const [pages, setPages] = useState([])
+  const [selectedPage, setSelectedPage] = useState(null)
+
+
 
   useEffect(() => {
-    async function fetchPages () {
+    const getPages = async () =>{
       try {
-        const response = await fetch(`${apiURL}/wiki`)
-        const pagesData = await response.json()
-        setPages(pagesData)
-      } catch (err) {
-        console.log('Oh no an error! ', err)
-      }
+      const pagesData = await api.fetchPages();
+      setPages(pagesData); 
+    } catch (error){ 
+      console.error('error fetching pages: ', error)
     }
+    };
 
-    fetchPages()
-  }, [])
+    getPages();
+  }, []);
 
   return (
-		<main>
+    <div>
       <h1>WikiVerse</h1>
-			<h2>An interesting 📚</h2>
-			<PagesList pages={pages} />
-		</main>
-  )
-}
+      <h2>An interesting 📚</h2>
+      {selectedPage ? ( 
+        <Page page={selectedPage} onBack={() => setSelectedPage(null)} />
+      ) : (
+        <PagesList pages={pages} onSelectPage={setSelectedPage} />
+      )}
+    </div>
+  );
+};
+export default App;
