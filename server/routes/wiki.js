@@ -17,14 +17,18 @@ router.get('/', async (req, res, next) => {
 // POST /wiki
 router.post('/', async (req, res, next) => {
   try {
-    const [user, wasCreated] = await User.findOrCreate({
-      where: {
-        name: req.body.name,
-        email: req.body.email
-      }
-    })
+    const { title, content, name, email, tags } = req.body;
 
-    const page = await Page.create(req.body)
+    // Create or find the author
+    const [user] = await User.findOrCreate({
+      where: { name, email },
+    });
+
+    const page = await Page.create({
+      title,
+      content,
+      authorId: user.id, // Ensure to use the correct user ID
+    });
 
     await page.setAuthor(user)
 

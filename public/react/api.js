@@ -7,18 +7,34 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 
- const fetchPages = async () => {
-  const response = await fetch(`${apiURL}/wiki`);
-  if (!response.ok){
-    throw new Error ('failed to fetch pages')
+const fetchPages = async (pageData) => {
+  if (pageData) {
+    // POST request to create a new page
+    const response = await fetch(`${apiURL}/wiki`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(pageData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create new page');
+    }
+    return response.json(); // return the newly created page
+  } else {
+    // GET request to fetch pages
+    const response = await fetch(`${apiURL}/wiki`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch pages');
+    }
+    return response.json();
   }
-  const pages = await response.json()
-  return pages;
-}
+};
 
 
  const fetchPageById = async (id) => {
-  const response = await fetch (`${apiURL}/pages/${id}`);
+  const response = await fetch (`${apiURL}/wiki/${id}`);
   if (!response.ok){
     throw new Error('Failed to fetch page with this id ${id}')
   }
